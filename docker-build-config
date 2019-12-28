@@ -1,0 +1,31 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: simple-express-docker
+  namespace: simple-express
+spec:
+  nodeSelector: null
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'simple-express-docker:latest'
+  runPolicy: Serial
+  source:
+    git:
+      ref: master
+      uri: 'https://github.com/sarangan/simple-express.git'
+    type: Git
+  strategy:
+    dockerStrategy: {}
+    type: Docker
+  successfulBuildsHistoryLimit: 5
+  triggers:
+    - type: ConfigChange
+    - generic:
+        secret: b7cd86929fa0bbb4
+      type: Generic
+    - github:
+        secret: dda41b7644137353
+      type: GitHub
+status:
+  lastVersion: 4
