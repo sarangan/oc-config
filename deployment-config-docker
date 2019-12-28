@@ -1,0 +1,42 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: simple-express-docker
+  namespace: simple-express
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    name: simple-express-docker
+  strategy:
+    rollingParams:
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        name: simple-express-docker
+    spec:
+      containers:
+          name: simple-express-docker
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+  triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+          - simple-express-docker
+        from:
+          kind: ImageStreamTag
+          name: 'simple-express-docker:latest'
+          namespace: simple-express
+        type: ImageChange
+  details:
+    causes:
+      - imageTrigger:
+          from:
+            kind: DockerImage
+     type: ImageChange
+
+
